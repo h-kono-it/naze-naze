@@ -6,9 +6,10 @@ interface Props {
   analyses: Analysis[];
   onSelect: (analysis: Analysis) => void;
   onRefresh: () => void;
+  onGuide: () => void;
 }
 
-export function HomeScreen({ analyses, onSelect, onRefresh }: Props) {
+export function HomeScreen({ analyses, onSelect, onRefresh, onGuide }: Props) {
   const [creating, setCreating] = useState(false);
   const [newName, setNewName] = useState('');
   const [newEvent, setNewEvent] = useState('');
@@ -50,9 +51,17 @@ export function HomeScreen({ analyses, onSelect, onRefresh }: Props) {
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-2xl mx-auto">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-800">なぜなぜ分析</h1>
-          <p className="text-sm text-gray-500 mt-1">根本原因を体系的に掘り下げるためのツール</p>
+        <div className="mb-6 flex items-start justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800">なぜなぜ分析</h1>
+            <p className="text-sm text-gray-500 mt-1">根本原因を体系的に掘り下げるためのツール</p>
+          </div>
+          <button
+            onClick={onGuide}
+            className="shrink-0 text-xs text-blue-600 border border-blue-200 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors mt-1"
+          >
+            使い方を見る
+          </button>
         </div>
 
         <div className="mb-6 bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 text-xs text-blue-700 leading-relaxed">
