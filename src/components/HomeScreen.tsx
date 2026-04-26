@@ -50,9 +50,13 @@ export function HomeScreen({ analyses, onSelect, onRefresh }: Props) {
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-2xl mx-auto">
-        <div className="mb-8">
+        <div className="mb-6">
           <h1 className="text-2xl font-bold text-gray-800">なぜなぜ分析</h1>
           <p className="text-sm text-gray-500 mt-1">根本原因を体系的に掘り下げるためのツール</p>
+        </div>
+
+        <div className="mb-6 bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 text-xs text-blue-700 leading-relaxed">
+          データはお使いのブラウザのローカルストレージにのみ保存されます。他のユーザーや他のデバイスとは共有されません。ブラウザのデータを削除すると分析も失われますのでご注意ください。
         </div>
 
         {creating ? (
