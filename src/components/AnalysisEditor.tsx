@@ -16,6 +16,7 @@ import { storage } from '../lib/storage';
 import { applyDagreLayout } from '../lib/layout';
 import { getDescendantIds, getLeafIds, getPathToRoot, stepKey } from '../lib/treeUtils';
 import { exportToCSV } from '../lib/csvExport';
+import { exportToJSON } from '../lib/transfer';
 import { WhyNode, type WhyNodePayload } from './WhyNode';
 import { NodeModal } from './NodeModal';
 import { VerificationPanel } from './VerificationPanel';
@@ -186,6 +187,12 @@ export function AnalysisEditor({ analysis: initialAnalysis, onBack }: Props) {
           </p>
         </div>
 
+        <button
+          onClick={() => exportToJSON(analysis)}
+          className="text-xs text-gray-500 border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-colors"
+        >
+          共有用に出力
+        </button>
         <button
           onClick={() => exportToCSV(analysis)}
           disabled={analysis.nodes.length <= 1}

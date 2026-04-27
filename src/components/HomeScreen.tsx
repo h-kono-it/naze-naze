@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import type { Analysis, WhyNodeData } from '../types';
 import { storage } from '../lib/storage';
+import { importFromJSON } from '../lib/transfer';
 
 interface Props {
   analyses: Analysis[];
@@ -13,6 +14,23 @@ export function HomeScreen({ analyses, onSelect, onRefresh, onGuide }: Props) {
   const [creating, setCreating] = useState(false);
   const [newName, setNewName] = useState('');
   const [newEvent, setNewEvent] = useState('');
+  const [importError, setImportError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!fileInputRef.current) return;
+    fileInputRef.current.value = '';
+    if (!file) return;
+    try {
+      const analysis = await importFromJSON(file);
+      storage.save(analysis);
+      onRefresh();
+      setImportError(null);
+    } catch (err) {
+      setImportError(err instanceof Error ? err.message : 'インポートに失敗しました');
+    }
+  };
 
   const handleCreate = () => {
     if (!newName.trim() || !newEvent.trim()) return;
@@ -56,13 +74,35 @@ export function HomeScreen({ analyses, onSelect, onRefresh, onGuide }: Props) {
             <h1 className="text-2xl font-bold text-gray-800">なぜなぜ分析</h1>
             <p className="text-sm text-gray-500 mt-1">根本原因を体系的に掘り下げるためのツール</p>
           </div>
-          <button
-            onClick={onGuide}
-            className="shrink-0 text-xs text-blue-600 border border-blue-200 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors mt-1"
-          >
-            使い方を見る
-          </button>
+          <div className="flex items-center gap-2 mt-1">
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="shrink-0 text-xs text-gray-600 border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              インポート
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".json"
+              className="hidden"
+              onChange={handleImport}
+            />
+            <button
+              onClick={onGuide}
+              className="shrink-0 text-xs text-blue-600 border border-blue-200 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors"
+            >
+              使い方を見る
+            </button>
+          </div>
         </div>
+
+        {importError && (
+          <div className="mb-4 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-xs text-red-600 flex items-center justify-between">
+            <span>{importError}</span>
+            <button onClick={() => setImportError(null)} className="ml-3 text-red-400 hover:text-red-600">✕</button>
+          </div>
+        )}
 
         <div className="mb-6 bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 text-xs text-blue-700 leading-relaxed">
           データはお使いのブラウザのローカルストレージにのみ保存されます。他のユーザーや他のデバイスとは共有されません。ブラウザのデータを削除すると分析も失われますのでご注意ください。
