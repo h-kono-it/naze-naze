@@ -15,6 +15,7 @@ import type { Analysis, WhyNodeData, VerifyState, VerificationStatus } from '../
 import { storage } from '../lib/storage';
 import { applyDagreLayout } from '../lib/layout';
 import { getDescendantIds, getLeafIds, getPathToRoot, stepKey } from '../lib/treeUtils';
+import { exportToCSV } from '../lib/csvExport';
 import { WhyNode, type WhyNodePayload } from './WhyNode';
 import { NodeModal } from './NodeModal';
 import { VerificationPanel } from './VerificationPanel';
@@ -184,6 +185,14 @@ export function AnalysisEditor({ analysis: initialAnalysis, onBack }: Props) {
             更新 {new Date(analysis.updatedAt).toLocaleString('ja-JP', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
           </p>
         </div>
+
+        <button
+          onClick={() => exportToCSV(analysis)}
+          disabled={analysis.nodes.length <= 1}
+          className="text-xs text-gray-500 border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+        >
+          CSV出力
+        </button>
 
         <div className="flex items-center gap-1 bg-gray-100 p-1 rounded-lg">
           <button
